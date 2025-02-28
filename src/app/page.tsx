@@ -2,7 +2,7 @@
 import Popup from "@/components/ui/popup";
 import { SearchBar } from "@/components/ui/searchBar";
 import { SideItem } from "@/components/ui/sideItem"
-import { LayoutDashboard, LucideTrendingUp, Search, ChartBar, Edit } from "lucide-react"
+import { LayoutDashboard, LucideTrendingUp, Search, ChartBar, Edit, UserCircle } from "lucide-react"
 import { useState } from "react";
 
 export default function Home() {
@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <div className="flex w-full">
-        <div className="w-[25%] h-[100vh] bg-gray-900 px-4">
+        <div className="w-[25%] relative h-[100vh] pb-[65px] bg-gray-900 px-4">
           <div className="pb-4 border-b border-gray-600 pt-3">
             <div className="flex justify-between items-center">
               <SideItem label={"youGen"} className="text-white text-2xl hover:bg-gray-900 cursor-pointer" />
@@ -28,6 +28,10 @@ export default function Home() {
           <SideItem label={"user prompt6"} className="text-sm" />
           <SideItem label={"user prompt7"} className="text-sm" />
           <SideItem label={"user prompt8"} className="text-sm" />
+
+          <div className="p-2 flex items-center absolute bottom-0 left-0 w-full text-gray-50 h-[60px]">
+            <SideItem label={"Jospin Ndagano"} icon={<UserCircle scale={30} />} className="text-sm w-full rounded-xl" isActive />
+          </div>
 
         </div>
         <div className="w-[75%] h-[100vh] bg-gray-950"></div>
