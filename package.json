@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest",
+    "cypress": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.1.17",
