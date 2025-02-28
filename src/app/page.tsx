@@ -1,4 +1,5 @@
 "use client"
+import { ChatBar } from "@/components/ui/chatBar";
 import Popup from "@/components/ui/popup";
 import { SearchBar } from "@/components/ui/searchBar";
 import { SideItem } from "@/components/ui/sideItem"
@@ -34,7 +35,11 @@ export default function Home() {
           </div>
 
         </div>
-        <div className="w-[75%] h-[100vh] bg-gray-950"></div>
+        <div className="w-[75%] relative h-[100vh] bg-gray-950">
+          <div className="absolute bottom-5 w-full left-0">
+            <ChatBar />
+          </div>
+        </div>
       </div>
       {
         isOpen && (<Popup isOpen={isOpen} onClose={handleSearchPopup} comp={<SearchBar />}>
