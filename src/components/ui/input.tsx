@@ -1,11 +1,7 @@
+import { InputHTMLAttributes } from "react";
 
-interface InputProps {
-    className?: string
-    placeholder?: string
-}
-
-export const Input = ({className, placeholder}: InputProps) => {
+export const Input = ({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) => {
     return <div className="w-full">
-        <input type="text" placeholder={placeholder} className={`px-3 bg-transparent w-full outline-none ${className}`} />
+        <input type="text" {...props} className={`px-3 bg-transparent w-full outline-none ${className}`} />
     </div>
 }
