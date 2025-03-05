@@ -14,7 +14,7 @@ export const script = (topic: string) => `
     Conclusion:
 
     A summary of the main points discussed in the video.
-    A call to action (e.g., "If you found this video helpful, don’t forget to like and subscribe!").
+    A call to action (e.g., "If you found this video helpful, don't forget to like and subscribe!").
     Any additional recommendations or resources for the audience to check out.
     Outro:
 

@@ -20,7 +20,7 @@ export const description = (topic: string) => `
     Social Media & Links:
 
     Include links to your social media, website, or any relevant resources.
-    Mention any affiliate links or products you’re promoting (if applicable).
+    Mention any affiliate links or products you're promoting (if applicable).
     Hashtags:
 
     Use relevant hashtags to make your video more discoverable (e.g., #YouTubeTips, #ThumbnailDesign, #ContentCreation).
