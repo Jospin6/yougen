@@ -113,7 +113,7 @@ export default function ChatSection() {
     return (
         <div className="w-full text-gray-50 relative h-screen flex flex-col items-center">
             {/* Zone des messages w-[80%] pb-[200px] h-screan m-auto pt-6 */}
-            <div className="flex-1 w-full max-w-3xl px-4 overflow-y-auto max-h-[500px] scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900">
+            <div className="flex-1 w-full max-w-3xl px-4 overflow-y-auto max-h-screan scrollbar">
                 {!hasStartedChat ? (
                     <div className="flex flex-col justify-end h-full space-y-8">
                         <div className="text-center space-y-4">
@@ -160,7 +160,7 @@ export default function ChatSection() {
 
                                 <div className={`p-4 ${message.sender === "user" ? "bg-gray-600" : "bg-gray-950"} rounded-xl`}>
                                     {message.sender === "assistant" ? (
-                                        <div className="prose prose-invert max-w-none text-sm">
+                                        <div className="prose prose-invert max-w-none text-sm font-sans">
                                             <ReactMarkdown
                                                 rehypePlugins={[rehypeHighlight]}
                                             >
@@ -184,13 +184,13 @@ export default function ChatSection() {
             <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full absolute bg-gradient-to-t from-white via-white to-transparent pb-4 pt-6 bottom-0 mt-auto">
+                className="w-full absolute bg-gray-950 pb-4 pt-2 bottom-0 mt-auto">
                 <div className="max-w-3xl mx-auto px-4">
                     <motion.div
                         animate={{ height: "auto" }}
                         whileFocus={{ scale: 1.01 }}
                         transition={{ duration: 0.2 }}
-                        className="relative border rounded-2xl lg:rounded-e-3xl p-2.5 flex items-end gap-2 bg-background">
+                        className="relative border bg-gray-600  rounded-2xl lg:rounded-e-3xl p-2.5 flex items-end gap-2 bg-background">
                         <div
                             contentEditable
                             role="textbox"
@@ -203,9 +203,9 @@ export default function ChatSection() {
                                     handleSend()
                                 }
                             }}
-                            data-placeholder="Message..."
-                            className="flex-1 text-gray-950 min-h-[36px] overflow-y-auto px-3 py-2 focus:outline-none 
-                        text-sm bg-background rounded-md empty:before:text-gray-500 empty:before:content-[attr(data-placeholder)] whitespace-pre-wrap break-words"
+                            data-placeholder="Create a script..."
+                            className="flex-1 text-gray-200 bg-gray-600 min-h-[36px] overflow-y-auto px-3 py-2 focus:outline-none 
+                        text-sm bg-background rounded-md empty:before:text-gray-300 empty:before:content-[attr(data-placeholder)] whitespace-pre-wrap break-words"
                             ref={(element) => {
                                 inputRef.current = element
                                 if (element && !input) {
@@ -219,31 +219,6 @@ export default function ChatSection() {
                     </motion.div>
                 </div>
             </motion.div>
-            {/* <div className="absolute bottom-5 w-full left-0">
-                <div className="flex justify-center">
-                    <SideItem label={"Get Titles"} className="text-sm" icon={<TextCursor size={18} />} />
-                    <SideItem label={"Get miniature"} className="text-sm" icon={<GalleryThumbnails size={18} />} />
-                    <SideItem label={"Generate Description"} icon={<DessertIcon size={18} />} className="text-sm ml-[-5px]" />
-                </div>
-                <div className="w-[75%] bottom-5 m-auto h-auto rounded-xl bg-gray-900 text-white">
-                    <div className="p-2">
-                        <Input
-                            className="h-auto"
-                            placeholder="Enter your thought"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter"}
-                        />
-                    </div>
-                    <div className="px-4 pb-2 flex justify-between">
-                        <div></div>
-                        <div>
-                            <button className="rounded-full p-1 text-black bg-white"><ArrowUp size={20} /></button>
-                        </div>
-                    </div>
-                </div>
-            </div> */}
-
         </div>
     );
 }
