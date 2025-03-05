@@ -14,11 +14,14 @@ import ReactMarkdown from "react-markdown"
 
 import { chat } from "@/actions/chat";
 import { readStreamableValue } from "ai/rsc";
+import { useDispatch, useSelector } from "react-redux";
 
 export type Message = {
     sender: "user" | "assistant" | "system";
     content: string;
 }
+import { addMessage, chatAsync } from "@/features/chatSlice";
+import { AppDispatch, RootState } from "@/features/store";
 
 const prompts = [
     {
@@ -39,14 +42,16 @@ const prompts = [
     },
 ]
 
-export default function ChatSection() {
+export default function TestChat() {
     const messageEndRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLDivElement>(null)
+    const dispatch = useDispatch<AppDispatch>()
 
     const [input, setInput] = useState<string>("")
     const [conversation, setConversation] = useState<Message[]>([])
     const [isLoading, setIsLoanding] = useState<boolean>(false)
     const [hasStartedChat, setHasStartedChat] = useState<boolean>(false)
+    const { messages, loading } = useSelector((state: RootState) => state.chat);
 
     const scrollToBottom = () => {
         messageEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -64,56 +69,27 @@ export default function ChatSection() {
     }
 
     const handleSend = async () => {
-        if (!input.trim() || isLoading) return
+        if (!input.trim() || loading) return;
+    
         const userMessage: Message = {
             sender: "user",
-            content: input.trim()
-        }
-        setInput("")
-        setIsLoanding(true)
-        setConversation(prev => [...prev, userMessage])
-        setHasStartedChat(true)
-        try {
-            const { newMessage } = await chat([
-                ...conversation,
-                userMessage,
-            ])
-            let textContent = ""
-            const assistantMessage: Message = {
-                sender: "assistant",
-                content: ""
-            }
-            setConversation(prev => [...prev, assistantMessage])
-
-            for await (const delta of readStreamableValue(newMessage)) {
-                textContent += delta
-                setConversation(prev => {
-                    const newConv = [...prev]
-                    newConv[newConv.length - 1] = {
-                        sender: "assistant",
-                        content: textContent
-                    }
-                    return newConv
-                })
-            }
-
-        } catch (error) {
-            console.error("Erreur", error)
-            setConversation(prev => [...prev, {
-                sender: "assistant",
-                content: "An error occured. Please try again"
-            }])
-        } finally {
-            setIsLoanding(false)
-            scrollToBottom()
-        }
-    }
+            content: input.trim(),
+        };
+    
+        setInput("");
+    
+        // Ajout immédiat du message utilisateur dans Redux
+        dispatch(addMessage(userMessage));
+    
+        // Lancer la requête AI et gérer le streaming dans Redux
+        dispatch(chatAsync([...messages, userMessage]));
+    };
 
     return (
         <div className="w-full text-gray-50 relative h-screen flex flex-col items-center">
             {/* Zone des messages w-[80%] pb-[200px] h-screan m-auto pt-6 */}
             <div className="flex-1 w-full max-w-3xl px-4 overflow-y-auto max-h-screan scrollbar">
-                {!hasStartedChat ? (
+                {!messages ? (
                     <div className="flex flex-col justify-center h-full space-y-8">
                         <div className="text-center space-y-4">
                             <h1 className="text-4xl font-semibold">
@@ -151,7 +127,7 @@ export default function ChatSection() {
                         }}
                         transition={{ duration: 0.2 }}
                         className="pt-8 space-y-4">
-                        {conversation.map((message, index) => (
+                        {messages.map((message, index) => (
                             <motion.div key={index}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
