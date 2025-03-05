@@ -29,7 +29,7 @@ export default function AuthLayout({
             >
                 <div className="fixed top-0 left-0 w-full h-screen">
                     <div className="flex w-full">
-                        <div className="w-[25%] relative h-[100vh] pb-[65px] bg-gray-90 0 px-4">
+                        <div className="w-[25%] relative h-[100vh] pb-[65px] bg-gray-900 px-4">
                             <NavBar/>
                         </div>
                         <div className="w-[75%] relative h-[100vh] bg-gray-950">
