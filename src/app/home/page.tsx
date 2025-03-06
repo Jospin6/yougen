@@ -1,3 +1,4 @@
+"use client"
 import ChatSection from "@/components/ui/chatSection";
 import TestChat from "@/components/ui/testChat";
 
