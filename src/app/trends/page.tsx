@@ -1,5 +1,4 @@
 "use client"
-import ChatSection from "@/components/ui/chatSection";
 import TrendingVideos from "@/components/ui/trendingVideos";
 import { AppDispatch } from "@/features/store";
 import { allCountries, fetchCountries } from "@/features/youtube/countrySlice";
@@ -13,6 +12,8 @@ export default function Home() {
     const { countries } = useSelector(allCountries)
     const dispatch = useDispatch<AppDispatch>()
 
+    
+
     useEffect(() => {
         dispatch(getVideoCategories(countryCode));
         dispatch(fetchCountries())
@@ -23,7 +24,6 @@ export default function Home() {
     }, [dispatch, countryCode, categoryId]);
 
     return <>
-        {/* <ChatSection /> */}
         <div>
             <h1 className="text-3xl text-white pt-4 pb-8 px-2">Trends videos</h1>
             <div className="grid grid-cols-4 gap-6 mx-2">
@@ -36,7 +36,7 @@ export default function Home() {
                 >
                     <option className="text-black font-bold">Choose a country</option>
                     {
-                        countries != null ? countries?.map(country => (<option value={country.code}> {country.name} </option>)) : (<div>No Results</div>)
+                        countries != null ? countries?.map(country => (<option value={country.code} key={country.code}> {country.name} </option>)) : (<div>No Results</div>)
                     }
                 </select>
 

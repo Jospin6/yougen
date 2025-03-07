@@ -13,7 +13,7 @@ const TrendingVideos = () => {
 
   return (
     <div className="text-white overflow-y-auto h-screen px-32">
-      { videos ? videos?.map((video) => (<VideoCard video={video} />)): (<div>No Results for this country</div>)}
+      { videos ? videos?.map((video) => (<VideoCard video={video} key={video.id} />)): (<div>No Results for this country</div>)}
     </div>
   )
 };

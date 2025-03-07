@@ -4,122 +4,43 @@ import { gemini } from "@/lib/gemini";
 import { RootState } from "./store";
 import { readStreamableValue } from "ai/rsc";
 
-interface Message {
-  role: "user" | "assistant";
+type Message = {
+  sender: "user" | "assistant" | "system";
   content: string;
 }
 interface ChatState {
-  response: string;
-  status: string;
+  loading: boolean;
+  conversation: Message[];
   error: string;
-  chatHistory: Message[]
 }
 
 const initialState: ChatState = {
-  response: '',
-  status: 'idle',
-  chatHistory: [],
+  loading: false,
+  conversation: [],
   error: ""
 }
 
-// export const chatAsync = createAsyncThunk(
-//   "chat/fetchMessages",
-//   async (history: Message[], { dispatch }) => {
-//     const formattedHistory = history.map((msg) => ({
-//       role: "user" as const,
-//       content: msg.content,
-//     }));
-
-//     // Ajouter un message vide pour le streaming
-//     dispatch(addMessage({ sender: "assistant", content: "" }));
-
-//     try {
-//       const { textStream } = await streamText({
-//         model: gemini("gemini-1.5-flash"),
-//         messages: formattedHistory,
-//       });
-
-//       let textContent = "";
-//       for await (const delta of textStream) {
-//         textContent += delta;
-//         dispatch(updateLastMessage(textContent)); // 🔥 Mise à jour progressive en Redux
-//       }
-//     } catch (error) {
-//       console.error("Erreur AI:", error);
-//       dispatch(updateLastMessage("An error occurred. Please try again."));
-//     }
-//   }
-// );
-
-// export const fetchAIResponse = createAsyncThunk(
-//   'ai/fetchResponse',
-//   async (message: string) => {
-//     const response = await fetch('/api/ai', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ message }),
-//     });
-//     const data = await response.json();
-//     return data.text;
-//   }
-// );
-
-export const fetchAIResponse = createAsyncThunk(
-  'ai/fetchResponse',
-  async (message: string, { dispatch }) => {
-    const res = await fetch('/api/ai', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message }),
-    });
-
-    const reader = res.body?.getReader();
-    const decoder = new TextDecoder();
-    let result = '';
-
-    if (reader) {
-      let done = false;
-      while (!done) {
-        const { value, done: readerDone } = await reader.read();
-        done = readerDone;
-        if (value) {
-          result += decoder.decode(value, { stream: true });
-          dispatch(updateAIResponse(result));
-        }
-      }
-      dispatch(addChatHistory({ role: 'ai', content: result }));
-    }
-    return result;
-  }
-);
 const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    updateAIResponse: (state, action) => {
-      state.response = action.payload;
+    setConversation: (state, action: PayloadAction<Message[]>) => {
+      state.conversation = action.payload; // Assure que `conversation` reste un tableau plat
     },
-    setAIStatus: (state, action) => {
-      state.status = action.payload;
+    addMessage: (state, action: PayloadAction<Message>) => {
+      state.conversation.push(action.payload); // Ajoute un seul message proprement
     },
-    addChatHistory: (state, action) => {
-      state.chatHistory.push(action.payload);
-      console.log(action.payload)
+    updateLastMessage: (state, action: PayloadAction<Message>) => {
+      if (state.conversation.length > 0) {
+        state.conversation[state.conversation.length - 1] = action.payload;
+      }
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchAIResponse.pending, (state) => { state.status = 'loading'; })
-      .addCase(fetchAIResponse.fulfilled, (state) => { state.status = 'succeeded'; })
-      .addCase(fetchAIResponse.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = "action error message";
-      });
+    clearMessages: (state) => {
+      state.conversation = [];
+    }
   },
 });
 
-export const { updateAIResponse, setAIStatus, addChatHistory } = chatSlice.actions;
-export const selectAIResponse = (state: RootState) => state.chat.response;
-export const selectAIStatus = (state: RootState) => state.chat.status;
-export const selectChatHistory = (state: RootState) => state.chat.chatHistory;
+export const { setConversation, addMessage, updateLastMessage } = chatSlice.actions;
+
 export default chatSlice.reducer;

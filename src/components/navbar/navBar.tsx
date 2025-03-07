@@ -4,6 +4,7 @@ import { SideItem } from "../ui/sideItem"
 import { useState } from "react"
 import Popup from "../ui/popup"
 import { SearchBar } from "../ui/searchBar"
+import Link from "next/link"
 
 export const NavBar = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -11,12 +12,14 @@ export const NavBar = () => {
     return <>
         <div className="pb-4 border-b border-gray-600 pt-3">
             <div className="flex justify-between items-center">
-                <SideItem label={"youGen"} className="text-white text-2xl hover:bg-gray-900 cursor-pointer" />
+                <Link href={"/"}>
+                    <SideItem label={"youGen"} className="text-white text-2xl hover:bg-gray-900 cursor-pointer" />
+                </Link>
                 <Search className="text-gray-50" size={20} onClick={handleSearchPopup} />
             </div>
-            <SideItem label={"Trends"} icon={<LucideTrendingUp size={20} />} />
-            <SideItem label={"Performances"} icon={<ChartBar size={20} />} />
-            <SideItem label={"plus"} icon={<LayoutDashboard size={20} />} />
+            <Link href={"/trends"}><SideItem label={"Trends"} icon={<LucideTrendingUp size={20} />} /></Link>
+            <Link href={"/stats"}><SideItem label={"Performances"} icon={<ChartBar size={20} />} /></Link>
+            <Link href={"/more"}><SideItem label={"plus"} icon={<LayoutDashboard size={20} />} /></Link>
         </div>
         <SideItem label={"Scripts"} className="text-sm py-4 hover:bg-gray-900" />
 

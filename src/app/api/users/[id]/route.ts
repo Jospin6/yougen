@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest  } from "next/server";
-import prisma from "../../../../lib/prisma/prisma";
+import prisma from "../../../../../prisma/prisma";
 
 export async function GET(req: NextRequest){
     const url = new URL(req.url);
