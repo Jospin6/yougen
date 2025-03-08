@@ -1,14 +1,23 @@
 "use client"
 import { ChartBar, Edit, LayoutDashboard, LucideTrendingUp, Search, UserCircle } from "lucide-react"
 import { SideItem } from "../ui/sideItem"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Popup from "../ui/popup"
 import { SearchBar } from "../ui/searchBar"
 import Link from "next/link"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch } from "@/features/store"
+import { fetchUserChat, selectChats, selectConversation } from "@/features/chatSlice"
 
 export const NavBar = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const handleSearchPopup = () => setIsOpen(!isOpen)
+    const dispatch = useDispatch<AppDispatch>();
+    const chats = useSelector(selectChats)
+    console.log(chats)
+    useEffect(() => {
+        dispatch(fetchUserChat("6a0292f2-00b2-4730-b7bf-e280b0fe590a"))
+    }, [dispatch])
     return <>
         <div className="pb-4 border-b border-gray-600 pt-3">
             <div className="flex justify-between items-center">
@@ -23,11 +32,20 @@ export const NavBar = () => {
         </div>
         <SideItem label={"Scripts"} className="text-sm py-4 hover:bg-gray-900" />
 
-        <SideItem label={"user prompt1"} className="text-sm" />
-        <SideItem label={"user prompt5"} className="text-sm" />
-        <SideItem label={"user prompt6"} className="text-sm" />
-        <SideItem label={"user prompt7"} className="text-sm" />
-        <SideItem label={"user prompt8"} className="text-sm" />
+        {
+            chats.map((chat, index) => {
+                const userMessage = chat.messages?.find((message) => message.sender === "user");
+
+                return (
+                    <Link href={`/y/${chat.id}`} key={index}>
+                        <SideItem
+                            label={userMessage ? userMessage.content : "New chat"}
+                            className="text-sm"
+                        />
+                    </Link>
+                );
+            })
+        }
 
         <div className="p-2 flex items-center absolute bottom-0 left-0 w-full text-gray-50 h-[60px]">
             <SideItem label={"Jospin Ndagano"} icon={<UserCircle scale={30} />} className="text-sm w-full rounded-xl" isActive />

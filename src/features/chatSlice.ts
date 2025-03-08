@@ -1,26 +1,23 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { ChatList, Chat } from "@/helpers/types"
+import { ChatList, Chat, Message } from "@/helpers/types"
 import { RootState } from "./store";
 
-
-type Message = {
-  sender: "user" | "assistant" | "system";
-  content: string;
-}
 type ChatDataProps = {
   userId: string
 }
 interface ChatState {
   loading: boolean;
-  conversation: Chat | null;
-  chats: Chat[],
+  conversation: Message[];
+  currentChatId: string | null;
+  chats: Chat[];
   error: string;
 }
 
 const initialState: ChatState = {
   loading: false,
-  conversation: null,
+  conversation: [],
+  currentChatId: null,
   chats: [],
   error: ""
 }
@@ -79,20 +76,23 @@ const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    // setConversation: (state, action: PayloadAction<Message[]>) => {
-    //   state.conversation = action.payload;
-    // },
-    // addMessage: (state, action: PayloadAction<Message>) => {
-    //   state.conversation.push(action.payload);
-    // },
-    // updateLastMessage: (state, action: PayloadAction<Message>) => {
-    //   if (state.conversation.length > 0) {
-    //     state.conversation[state.conversation.length - 1] = action.payload;
-    //   }
-    // },
+    setConversation: (state, action: PayloadAction<Message[]>) => {
+      state.conversation = action.payload;
+    },
+    addMessage: (state, action: PayloadAction<Message>) => {
+      state.conversation.push(action.payload);
+    },
+    updateLastMessage: (state, action: PayloadAction<Message>) => {
+      if (state.conversation.length > 0) {
+        state.conversation[state.conversation.length - 1] = action.payload;
+      }
+    },
     // clearMessages: (state) => {
     //   state.conversation = [];
-    // }
+    // },
+    setCurrentChatId: (state, action: PayloadAction<string>) => {
+      state.currentChatId = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -104,8 +104,12 @@ const chatSlice = createSlice({
         if (chat) {
           if (chat.messages) {
             chat.messages.push(action.payload);
+            state.conversation.push(action.payload);
           } else {
             chat.messages = [action.payload];
+            if (state.conversation) {
+              state.conversation = [action.payload];
+            }
           }
         }
       })
@@ -115,12 +119,12 @@ const chatSlice = createSlice({
       .addCase(postMessage.rejected, (state, action) => {
         state.error = action.payload as string;
       })
-      
+
       .addCase(fetchUserChat.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchUserChat.fulfilled, (state, action) => {
-        state.conversation = action.payload;
+        state.chats = action.payload;
         state.loading = false;
       })
       .addCase(fetchUserChat.rejected, (state, action) => {
@@ -142,6 +146,7 @@ const chatSlice = createSlice({
 
 export const selectChats = (state: RootState) => state.chat.chats;
 export const selectConversation = (state: RootState) => state.chat.conversation;
+export const selectCurrentChatId = (state: RootState) => state.chat.currentChatId;
 
-// export const { setConversation, addMessage, updateLastMessage } = chatSlice.actions;
+export const { setCurrentChatId, setConversation, updateLastMessage, addMessage } = chatSlice.actions;
 export default chatSlice.reducer;

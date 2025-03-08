@@ -9,12 +9,12 @@ import {
     Tags
 } from "lucide-react";
 import rehypeHighlight from "rehype-highlight";
-import { motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import ReactMarkdown from "react-markdown"
 import { TopNavbar } from "../navbar/topNavbar";
-import { fetchUserChat, selectChats, selectConversation } from "@/features/chatSlice"
+import { fetchChatMessages, selectCurrentChatId, selectConversation, setCurrentChatId } from "@/features/chatSlice"
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/features/store";
+import { AppDispatch } from "@/features/store";
 import { useChat } from "@/hooks/useChat";
 
 export type Message = {
@@ -42,20 +42,24 @@ const prompts = [
     },
 ]
 
-export default function ChatSection() {
+export default function ChatSection({chatId}: { chatId: string }) {
     const conversation = useSelector(selectConversation)
+    const curentChatId = useSelector(selectCurrentChatId)
     const dispatch = useDispatch<AppDispatch>();
     const { input, setInput, handleSend, hasStartedChat } = useChat();
     const messageEndRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLDivElement>(null)
-    const chats = useSelector(selectConversation) 
 
     const scrollToBottom = () => {
         messageEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
 
     useEffect(() => {
-        dispatch(fetchUserChat("6a0292f2-00b2-4730-b7bf-e280b0fe590a"))
+        dispatch(setCurrentChatId(chatId))
+    }, [dispatch, chatId])
+
+    useEffect(() => {
+        dispatch(fetchChatMessages(chatId))
     }, [dispatch])
 
     useEffect(() => {
@@ -69,101 +73,12 @@ export default function ChatSection() {
         }
     }
 
-    // const handleSend = async () => {
-    //     if (!input.trim() || isLoading) return
-    //     const userMessage: Message = {
-    //         sender: "user",
-    //         content: input.trim()
-    //     }
-    //     setInput("")
-    //     setIsLoanding(true)
-    //     dispatch(setConversation((prev: any) => [...prev, userMessage]))
-    //     setHasStartedChat(true)
-    //     try {
-    //         const { newMessage } = await chat([
-    //             ...conversation,
-    //             userMessage,
-    //         ])
-    //         let textContent = ""
-    //         const assistantMessage: Message = {
-    //             sender: "assistant",
-    //             content: ""
-    //         }
-    //         dispatch(setConversation((prev: any) => [...prev, assistantMessage]))
-
-    //         for await (const delta of readStreamableValue(newMessage)) {
-    //             textContent += delta
-    //             dispatch(setConversation((prev: any) => {
-    //                 const newConv = [...prev]
-    //                 newConv[newConv.length - 1] = {
-    //                     sender: "assistant",
-    //                     content: textContent
-    //                 }
-    //                 return newConv
-    //             }))
-    //         }
-
-    //     } catch (error) {
-    //         console.error("Erreur", error)
-    //         dispatch(setConversation((prev: any) => [...prev, {
-    //             sender: "assistant",
-    //             content: "An error occured. Please try again"
-    //         }]))
-    //     } finally {
-    //         setIsLoanding(false)
-    //         scrollToBottom()
-    //     }
-    // }
-
-    // const handleSend = async () => {
-    //     if (!input.trim() || isLoading) return;
-
-    //     const userMessage: Message = {
-    //         sender: "user",
-    //         content: input.trim(),
-    //     };
-
-    //     setInput("");
-    //     // setIsLoading(true);
-    //     dispatch(addMessage(userMessage));
-    //     setHasStartedChat(true);
-
-    //     try {
-    //         const { newMessage } = await chat([...conversation, userMessage]);
-
-    //         let textContent = "";
-    //         const assistantMessage: Message = {
-    //             sender: "assistant",
-    //             content: "",
-    //         };
-
-    //         dispatch(addMessage(assistantMessage));
-
-    //         for await (const delta of readStreamableValue(newMessage)) {
-    //             textContent += delta;
-    //             dispatch(setConversation([
-    //                 ...conversation,
-    //                 userMessage, 
-    //                 { sender: "assistant", content: textContent }
-    //             ]));
-    //         }
-    //     } catch (error) {
-    //         console.error("Erreur", error);
-    //         dispatch(updateLastMessage({
-    //             sender: "assistant",
-    //             content: "An error occurred. Please try again.",
-    //         }));
-    //     } finally {
-    //         // setIsLoading(false);
-    //     }
-    // };
-
     return (
         <div className="w-full text-gray-50 relative h-screen flex flex-col items-center">
             <TopNavbar />
             {/* Zone des messages w-[80%] pb-[200px] h-screan m-auto pt-6 */}
             <div className="flex-1 w-full max-w-3xl px-4 overflow-y-auto max-h-screan scrollbar">
-                {/* {!hasStartedChat ? (
+                {!curentChatId ? (
                     <div className="flex flex-col justify-center h-full space-y-8">
                         <div className="text-center space-y-4">
                             <h1 className="text-4xl font-semibold">
@@ -195,38 +110,40 @@ export default function ChatSection() {
                         </div>
                     </div>
                 ) : (
-                    
-                )} */}
 
-                <motion.div
-                    animate={{
-                        paddingBottom: input ? (input.split("\n").length > 3 ? "206px" : "110px") : "80px"
-                    }}
-                    transition={{ duration: 0.2 }}
-                    className="pt-8 space-y-4">
-                    {conversation && conversation?.messages?.map((message, index) => (
-                        <motion.div key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className={`flex space-x-4 ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
+                    <motion.div
+                        animate={{
+                            paddingBottom: input ? (input.split("\n").length > 3 ? "206px" : "110px") : "80px"
+                        }}
+                        transition={{ duration: 0.2 }}
+                        className="pt-8 space-y-4">
+                        {conversation && conversation.map((message, index) => (
+                            <motion.div key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className={`flex space-x-4 ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
 
-                            <div className={`p-4 ${message.sender === "user" ? "bg-gray-600" : "bg-gray-950"} rounded-xl`}>
-                                {message.sender === "assistant" ? (
-                                    <div className="prose prose-invert max-w-none text-sm font-sans">
-                                        <ReactMarkdown
-                                            rehypePlugins={[rehypeHighlight]}
-                                        >
-                                            {message.content}
-                                        </ReactMarkdown>
-                                    </div>
-                                ) : (
-                                    <p className="text-sm">{message.content}</p>
-                                )}
-                            </div>
-                        </motion.div>
-                    ))}
-                    <div ref={messageEndRef} />
-                </motion.div>
+                                <div className={`p-4 ${message.sender === "user" ? "bg-gray-600" : "bg-gray-950"} rounded-xl`}>
+                                    {message.sender === "assistant" ? (
+                                        <div className="prose prose-invert max-w-none text-sm font-sans">
+                                            <ReactMarkdown
+                                                rehypePlugins={[rehypeHighlight]}
+                                            >
+                                                {message.content}
+                                            </ReactMarkdown>
+                                        </div>
+                                    ) : (
+                                        <p className="text-sm">{message.content}</p>
+                                    )}
+                                </div>
+                            </motion.div>
+                        ))}
+                        <div ref={messageEndRef} />
+                    </motion.div>
+
+                )}
+
+
             </div>
 
             {/* Zone d'entrée */}
