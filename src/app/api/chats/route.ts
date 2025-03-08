@@ -18,15 +18,20 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("userId");
+    if (!userId) {
+        return NextResponse.json({ error: "chatId is required" }, { status: 400 });
+    }
     try {
         const chats = await prisma.chat.findMany({
+            where: { userId, },
             include: {
                 messages: {
                     orderBy: { createdAt: "asc" },
                 },
             },
         });
-
         return NextResponse.json(chats);
     } catch (error) {
         return NextResponse.json({ error: "Failed to fetch chats with messages" }, { status: 500 });

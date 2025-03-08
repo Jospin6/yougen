@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
     ArrowUpIcon,
     FileText,
@@ -9,19 +9,17 @@ import {
     Tags
 } from "lucide-react";
 import rehypeHighlight from "rehype-highlight";
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import ReactMarkdown from "react-markdown"
-
-import { chat } from "@/actions/chat";
-import { readStreamableValue } from "ai/rsc";
 import { TopNavbar } from "../navbar/topNavbar";
-import { setConversation, addMessage, updateLastMessage } from "@/features/chatSlice"
+import { fetchUserChat, selectChats, selectConversation } from "@/features/chatSlice"
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/features/store";
 import { useChat } from "@/hooks/useChat";
 
 export type Message = {
-    sender: "user" | "assistant" | "system";
+    chatId?: string;
+    sender: "user" | "assistant";
     content: string;
 }
 
@@ -45,17 +43,20 @@ const prompts = [
 ]
 
 export default function ChatSection() {
-    const conversation = useSelector((state: RootState) => state.chat.conversation)
+    const conversation = useSelector(selectConversation)
     const dispatch = useDispatch<AppDispatch>();
     const { input, setInput, handleSend, hasStartedChat } = useChat();
     const messageEndRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLDivElement>(null)
-
-    console.log(conversation)
+    const chats = useSelector(selectConversation) 
 
     const scrollToBottom = () => {
         messageEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
+
+    useEffect(() => {
+        dispatch(fetchUserChat("6a0292f2-00b2-4730-b7bf-e280b0fe590a"))
+    }, [dispatch])
 
     useEffect(() => {
         scrollToBottom()
@@ -203,7 +204,7 @@ export default function ChatSection() {
                     }}
                     transition={{ duration: 0.2 }}
                     className="pt-8 space-y-4">
-                    {conversation.map((message, index) => (
+                    {conversation && conversation?.messages?.map((message, index) => (
                         <motion.div key={index}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}

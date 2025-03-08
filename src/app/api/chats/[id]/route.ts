@@ -8,6 +8,11 @@ export async function GET(req: NextRequest) {
     try {
         const chat = await prisma.chat.findUnique({
             where: { id, },
+            include: {
+                messages: {
+                    orderBy: { createdAt: "asc" },
+                },
+            },
         });
         if (!chat) {
             return NextResponse.json({ message: 'Not Found' }, { status: 404 });
