@@ -18,6 +18,17 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-    const chats = await prisma.chat.findMany();
-    return NextResponse.json(chats);
+    try {
+        const chats = await prisma.chat.findMany({
+            include: {
+                messages: {
+                    orderBy: { createdAt: "asc" },
+                },
+            },
+        });
+
+        return NextResponse.json(chats);
+    } catch (error) {
+        return NextResponse.json({ error: "Failed to fetch chats with messages" }, { status: 500 });
+    }
 }
