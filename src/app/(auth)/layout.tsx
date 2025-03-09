@@ -26,7 +26,8 @@ export default function AuthLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <h1>AUTH lAYOUT</h1>
+        <div className="px-28 h-[60px] flex justify-start items-center text-3xl">YouGen</div>
+
         {children}
       </body>
     </html>

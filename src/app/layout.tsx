@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "@/features/provider";
 import { NavBar } from "@/components/navbar/navBar";
-import { TopNavbar } from "@/components/navbar/topNavbar";
+import { SessionProvider } from 'next-auth/react';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,19 +30,22 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReduxProvider>
-          <div className="fixed top-0 left-0 w-full h-screen">
-            <div className="flex w-full">
-              <div className="w-[25%] relative h-[100vh] pb-[65px] bg-gray-900 px-4">
-                <NavBar />
-              </div>
-              <div className="w-[75%] relative h-[100vh] bg-gray-950">
-                
-                {children}
+        <SessionProvider>
+          <ReduxProvider>
+            <div className="fixed top-0 left-0 w-full h-screen">
+              <div className="flex w-full">
+                <div className="w-[25%] relative h-[100vh] pb-[65px] bg-gray-900 px-4">
+                  <NavBar />
+                </div>
+                <div className="w-[75%] relative h-[100vh] bg-gray-950">
+
+                  {children}
+                </div>
               </div>
             </div>
-          </div>
-        </ReduxProvider>
+          </ReduxProvider>
+        </SessionProvider>
+
       </body>
     </html>
   );

@@ -14,66 +14,78 @@ datasource db {
 }
 
 model User {
-  id               String    @id @default(uuid())
-  name             String
-  email            String    @unique
-  password         String
-  status           UserStatus @default(ACTIVE)
-  subscription     Subscription?
-  requestsUsed     Int       @default(0)
-  freeTrial        FreeTrial?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  Payment Payment[]
-  Chat Chat[]
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  password     String
+  status       UserStatus    @default(ACTIVE)
+  image        String?
+  subscription Subscription?
+  requestsUsed Int           @default(0)
+  freeTrial    FreeTrial?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  Payment      Payment[]
+  Chat         Chat[]
+  accounts     Account[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  access_token      String?
+  user              User    @relation(fields: [userId], references: [id])
 }
 
 enum UserStatus {
-  ACTIVE  
-  BLOCKED 
+  ACTIVE
+  BLOCKED
 }
 
 model Chat {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages  Message[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Message {
   id        String   @id @default(uuid())
   chatId    String
   chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  sender    String   // "user" ou "bot"
+  sender    String // "user" ou "bot"
   content   String
   createdAt DateTime @default(now())
 }
 
 model Subscription {
-  id               String    @id @default(uuid())
-  userId           String    @unique
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan             Plan      @default(FREE)
-  status           SubscriptionStatus @default(ACTIVE)
-  expiresAt        DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id        String             @id @default(uuid())
+  userId    String             @unique
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan      Plan               @default(FREE)
+  status    SubscriptionStatus @default(ACTIVE)
+  expiresAt DateTime?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
 }
 
 model FreeTrial {
-  id               String    @id @default(uuid())
-  userId           String    @unique
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expiresAt        DateTime
-  createdAt        DateTime  @default(now())
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
 
 enum Plan {
-  FREE        
-  PREMIUM     
-  BUSINESS    
+  FREE
+  PREMIUM
+  BUSINESS
 }
 
 enum SubscriptionStatus {
@@ -83,13 +95,13 @@ enum SubscriptionStatus {
 }
 
 model Payment {
-  id               String    @id @default(uuid())
-  userId           String
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  amount           Float
-  currency         String    @default("USD")
-  status           PaymentStatus @default(PENDING)
-  createdAt        DateTime  @default(now())
+  id        String        @id @default(uuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount    Float
+  currency  String        @default("USD")
+  status    PaymentStatus @default(PENDING)
+  createdAt DateTime      @default(now())
 }
 
 enum PaymentStatus {
