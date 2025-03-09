@@ -10,6 +10,7 @@ interface ChatState {
   loading: boolean;
   conversation: Message[];
   currentChatId: string | null;
+  inputMessage: string
   chats: Chat[];
   error: string;
 }
@@ -18,6 +19,7 @@ const initialState: ChatState = {
   loading: false,
   conversation: [],
   currentChatId: null,
+  inputMessage: "",
   chats: [],
   error: ""
 }
@@ -80,12 +82,18 @@ const chatSlice = createSlice({
       state.conversation = action.payload;
     },
     addMessage: (state, action: PayloadAction<Message>) => {
-      state.conversation.push(action.payload);
+      // state.conversation.push(action.payload);
     },
     updateLastMessage: (state, action: PayloadAction<Message>) => {
       if (state.conversation.length > 0) {
         state.conversation[state.conversation.length - 1] = action.payload;
       }
+    },
+    setInputMessage: (state, action: PayloadAction<string>) => {
+      state.inputMessage = action.payload;
+    },
+    clearInputMessage: (state) => {
+      state.inputMessage = "";
     },
     // clearMessages: (state) => {
     //   state.conversation = [];
@@ -147,6 +155,13 @@ const chatSlice = createSlice({
 export const selectChats = (state: RootState) => state.chat.chats;
 export const selectConversation = (state: RootState) => state.chat.conversation;
 export const selectCurrentChatId = (state: RootState) => state.chat.currentChatId;
+export const selectInputMessage = (state: RootState) => state.chat.inputMessage;
 
-export const { setCurrentChatId, setConversation, updateLastMessage, addMessage } = chatSlice.actions;
+export const { 
+  setCurrentChatId, 
+  setConversation, 
+  clearInputMessage, 
+  updateLastMessage, 
+  addMessage, 
+  setInputMessage } = chatSlice.actions;
 export default chatSlice.reducer;

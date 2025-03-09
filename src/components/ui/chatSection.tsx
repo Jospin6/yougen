@@ -12,7 +12,7 @@ import rehypeHighlight from "rehype-highlight";
 import { AnimatePresence, motion } from "framer-motion"
 import ReactMarkdown from "react-markdown"
 import { TopNavbar } from "../navbar/topNavbar";
-import { fetchChatMessages, selectCurrentChatId, selectConversation, setCurrentChatId } from "@/features/chatSlice"
+import { fetchChatMessages, selectCurrentChatId, selectConversation, setCurrentChatId, selectInputMessage } from "@/features/chatSlice"
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/features/store";
 import { useChat } from "@/hooks/useChat";
@@ -42,29 +42,33 @@ const prompts = [
     },
 ]
 
-export default function ChatSection({chatId}: { chatId: string }) {
+export default function ChatSection({ chatId }: { chatId: string }) {
     const conversation = useSelector(selectConversation)
     const curentChatId = useSelector(selectCurrentChatId)
     const dispatch = useDispatch<AppDispatch>();
     const { input, setInput, handleSend, hasStartedChat } = useChat();
     const messageEndRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLDivElement>(null)
+    const inputMessage = useSelector(selectInputMessage)
 
     const scrollToBottom = () => {
         messageEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
 
     useEffect(() => {
+        dispatch(fetchChatMessages(chatId))
         dispatch(setCurrentChatId(chatId))
     }, [dispatch, chatId])
 
     useEffect(() => {
-        dispatch(fetchChatMessages(chatId))
-    }, [dispatch])
-
-    useEffect(() => {
         scrollToBottom()
     }, [conversation])
+
+    useEffect(() => {
+        if (inputRef.current && inputMessage.trim() !== inputRef.current.textContent?.trim()) {
+            inputRef.current.textContent = inputMessage; // Initialisation du contenu si nécessaire
+        }
+    }, [inputMessage]);
 
     const handlePromptClick = (text: string) => {
         setInput(text)
@@ -78,7 +82,7 @@ export default function ChatSection({chatId}: { chatId: string }) {
             <TopNavbar />
             {/* Zone des messages w-[80%] pb-[200px] h-screan m-auto pt-6 */}
             <div className="flex-1 w-full max-w-3xl px-4 overflow-y-auto max-h-screan scrollbar">
-                {!curentChatId ? (
+                {curentChatId === null ? (
                     <div className="flex flex-col justify-center h-full space-y-8">
                         <div className="text-center space-y-4">
                             <h1 className="text-4xl font-semibold">
@@ -172,12 +176,7 @@ export default function ChatSection({chatId}: { chatId: string }) {
                             data-placeholder="Create a script..."
                             className="flex-1 text-gray-200 bg-gray-800 min-h-[36px] overflow-y-auto px-3 py-2 focus:outline-none 
                         text-sm bg-background rounded-md empty:before:text-gray-300 empty:before:content-[attr(data-placeholder)] whitespace-pre-wrap break-words"
-                            ref={(element) => {
-                                inputRef.current = element
-                                if (element && !input) {
-                                    element.textContent = ""
-                                }
-                            }}
+                            ref={inputRef}
                         />
                         <button onClick={() => handleSend()} className="rounded-full shrink-0 mb-0.5 p-1 bg-black text-white">
                             <ArrowUpIcon strokeWidth={2.5} className="size-5" />

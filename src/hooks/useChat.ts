@@ -1,15 +1,10 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { chat } from "@/actions/chat";
-import { setCurrentChatId, postChat, postMessage, setConversation, updateLastMessage, addMessage } from "@/features/chatSlice";
+import { setCurrentChatId, postChat, postMessage, updateLastMessage, addMessage, clearInputMessage } from "@/features/chatSlice";
 import { AppDispatch, RootState } from "@/features/store";
 import { readStreamableValue } from "ai/rsc";
 import { Message } from "@/helpers/types"
-
-// type Message = {
-//     sender: "user" | "assistant";
-//     content: string;
-// };
 
 export const useChat = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -57,13 +52,9 @@ export const useChat = () => {
 
             for await (const delta of readStreamableValue(newMessage)) {
                 textContent += delta;
-                dispatch(setConversation([
-                    ...conversation,
-                    userMessage,
-                    { chatId: currentChatId!, sender: "assistant", content: textContent }
-                ]));
             }
             dispatch(postMessage({ chatId: currentChatId!, sender: "assistant", content: textContent }));
+            dispatch(clearInputMessage())
         } catch (error) {
             console.error("Erreur", error);
             dispatch(updateLastMessage({
@@ -73,6 +64,7 @@ export const useChat = () => {
             }));
         }
     };
+
 
     return { input, setInput, handleSend, hasStartedChat };
 };

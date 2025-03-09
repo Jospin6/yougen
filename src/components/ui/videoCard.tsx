@@ -1,9 +1,9 @@
 "use client"
-import React, { useEffect, useState } from "react";
 import { PlayCircle, Wand2 } from "lucide-react";
-import { createChatWithScript } from "@/actions/createChatWithScript";
-import { useChat } from "@/hooks/useChat";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/features/store";
+import { postChat, setCurrentChatId, setInputMessage } from "@/features/chatSlice";
 
 interface VideoCardProps {
     video: {
@@ -21,21 +21,27 @@ interface VideoCardProps {
 }
 
 const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
-    const { input, setInput, handleSend } = useChat();
-    const [str, setStr] = useState("")
-    const handleGenerateScript = (videoTitle: string) => {
-        setStr(videoTitle)
-        setInput(videoTitle);  // Met à jour l'état (asynchrone)
+    const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
+
+    const handleGenerateScript = async (videoTitle: string) => {
+        const prompt = `Generate a similare script for this topic: ${videoTitle}`
+    
+        try {
+            const res = await dispatch(postChat({ userId: "6a0292f2-00b2-4730-b7bf-e280b0fe590a" })).unwrap();
+    
+            if (res?.id) {
+                dispatch(setCurrentChatId(res.id));
+                dispatch(setInputMessage(prompt));
+                setTimeout(() => { 
+                    router.push(`/y/${res.id}`);
+                }, 200)
+            }
+        } catch (error) {
+            console.error("Error creating chat:", error);
+        }
     };
 
-    // Utiliser useEffect pour écouter la mise à jour de `input`
-    useEffect(() => {
-        if (input === str && input.trim()) {  // Vérifie que la mise à jour a eu lieu
-            handleSend();  // Envoie le message après la mise à jour
-            const chatId = "1234";
-            redirect(`/y/${chatId}`);
-        }
-    }, [input, str]);
     return (
         <div className=" shadow-lg m-2 p-2 h-[200px] border-b border-gray-600 flex overflow-hidden">
             <div className="w-[80%] relative">
