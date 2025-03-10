@@ -3,6 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import { JWT } from "next-auth/jwt";
+import "dotenv/config";
 
 const prisma = new PrismaClient();
 
@@ -21,10 +22,6 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async jwt({ token, account, user }: { token: JWT; account?: any; user?: any }) {
-            if (user) {
-                token.id = user.id;
-                token.role = user.role;
-            }
             if (account) {
                 token.accessToken = account.access_token;
             }
