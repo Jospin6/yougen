@@ -24,9 +24,12 @@ export const NavBar = () => {
             message.content.toLowerCase().includes(searchTerm.toLowerCase())
         )
     );
+    console.log("user id:",user?.id!)
 
     useEffect(() => {
-        dispatch(fetchUserChat(user?.id!))
+        if (user) {
+            dispatch(fetchUserChat(user.id!))
+        }  
     }, [dispatch])
     return <>
         <div className="pb-4 border-b border-gray-600 pt-3">
@@ -46,7 +49,7 @@ export const NavBar = () => {
             {
                 chats.map((chat, index) => {
                     const userMessage = chat.messages?.find((message) => message.sender === "user");
-
+                    console.log("user scripts",userMessage)
                     return (
                         <Link href={`/y/${chat.id}`} key={index}>
                             <SideItem

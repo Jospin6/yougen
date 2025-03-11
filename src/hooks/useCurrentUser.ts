@@ -11,7 +11,7 @@ export function useCurrentUser() {
 
   useEffect(() => {
     dispatch(fetchcurrentUser())
-  }, []);
+  }, [dispatch]);
 
   return user;
 }

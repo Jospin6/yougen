@@ -58,6 +58,7 @@ export const fetchUserChat = createAsyncThunk(
   async (userId: string) => {
     try {
       const response = await axios.get(`/api/chats?userId=${userId}`);
+      console.log(response)
       return response.data;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || "Failed to fetch user chats");
@@ -131,7 +132,7 @@ const chatSlice = createSlice({
       .addCase(fetchUserChat.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchUserChat.fulfilled, (state, action) => {
+      .addCase(fetchUserChat.fulfilled, (state, action: PayloadAction<any>) => {
         state.chats = action.payload;
         state.loading = false;
       })
