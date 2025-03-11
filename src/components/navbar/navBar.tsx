@@ -24,7 +24,6 @@ export const NavBar = () => {
             message.content.toLowerCase().includes(searchTerm.toLowerCase())
         )
     );
-    console.log("user id:",user?.id!)
 
     useEffect(() => {
         if (user) {
