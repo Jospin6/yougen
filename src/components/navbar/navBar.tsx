@@ -8,6 +8,7 @@ import Link from "next/link"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch } from "@/features/store"
 import { fetchUserChat, selectChats } from "@/features/chatSlice"
+import { useCurrentUser } from "@/hooks/useCurrentUser"
 
 export const NavBar = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -15,6 +16,8 @@ export const NavBar = () => {
     const dispatch = useDispatch<AppDispatch>();
     const chats = useSelector(selectChats)
     const [searchTerm, setSearchTerm] = useState("");
+    const user = useCurrentUser()
+    console.log("the user",user)
 
     const filteredChats = chats.filter(chat =>
         chat.messages?.some(message =>
@@ -58,9 +61,16 @@ export const NavBar = () => {
         </div>
 
         <div className="p-2 flex items-center absolute bottom-0 left-0 w-full text-gray-50 h-[60px]">
-            <Link href={"/login"} className="w-full">
-                <SideItem label={"Jospin Ndagano"} icon={<UserCircle scale={30} />} className="text-sm w-full rounded-xl" isActive />
+            {user ? 
+            (
+                <Link href={"#"} className="w-full">
+                <SideItem label={user.name} icon={<UserCircle scale={30} />} className="text-sm w-full rounded-xl" isActive />
             </Link>
+            ) 
+            : (<Link href={"/login"} className="w-full">
+                <SideItem label={"SignUp"} icon={<UserCircle scale={30} />} className="text-sm w-full rounded-xl" isActive />
+            </Link>)}
+
         </div>
         {isOpen && (
             <Popup isOpen={isOpen} onClose={handleSearchPopup} comp={<SearchBar onSearch={setSearchTerm} />}>

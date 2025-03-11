@@ -28,13 +28,15 @@ export default function Login() {
   const onSubmit = async (data: any) => {
     setError("");
 
-   const response = dispatch(postLogin(data));
-
-    if (!response) {
-      throw new Error("Échec de la connexion");
+    try {
+      const response = await dispatch(postLogin(data)).unwrap();
+      if (!response) {
+        throw new Error("Échec de l'inscription");
+      }
+      redirect("/");
+    } catch (error) {
+      console.error("Erreur de connexion :", error);
     }
-
-    redirect("/");
   };
 
   return (

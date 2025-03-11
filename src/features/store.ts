@@ -3,6 +3,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import chatReducer from "./chatSlice"
 import trendingReducer from "./youtube/trendingSlice"
 import countryReducer from "./youtube/countrySlice"
+import userReducer from "./userSlice"
 import { persistStore, persistReducer } from "redux-persist"
 import storage from "redux-persist/lib/storage"
 
@@ -16,6 +17,7 @@ const persistConfig = {
 
 // Combinaison des reducers
 const rootReducer = combineReducers({
+    user: userReducer,
     chat: chatReducer,
     trending: trendingReducer,
     countries: countryReducer,

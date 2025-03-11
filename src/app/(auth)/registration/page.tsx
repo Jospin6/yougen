@@ -31,15 +31,14 @@ export default function RegisterForm() {
   const onSubmit = async (data: User) => {
     setError("");
     try {
-      const response = dispatch(postUser(data));
-
-      if (!response) {
-        throw new Error("Échec de l'inscription");
-      }
-      redirect("/");
-    } catch (err: any) {
-      setError(err.message || "Une erreur est survenue");
-    }
+          const response = await dispatch(postUser(data)).unwrap();
+          if (!response) {
+            throw new Error("Échec de l'inscription");
+          }
+          redirect("/");
+        } catch (error) {
+          console.error("Une erreur est survenue :", error);
+        }
   };
 
   return (
