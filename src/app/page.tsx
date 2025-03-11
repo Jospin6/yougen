@@ -1,6 +1,7 @@
 "use client";
 import { postChat, setCurrentChatId, setInputMessage } from "@/features/chatSlice";
 import { AppDispatch } from "@/features/store";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { AnimatePresence, motion } from "framer-motion";
 import { FileText, Type, AlignLeft, Tags } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -30,12 +31,13 @@ export default function App() {
 
   // const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const user = useCurrentUser()
 
   const handleGenerateScript = async (videoTitle: string) => {
     const prompt = `${videoTitle} for the topic:`
 
     try {
-      const res = await dispatch(postChat({ userId: "6a0292f2-00b2-4730-b7bf-e280b0fe590a" })).unwrap();
+      const res = await dispatch(postChat({ userId: user?.id! })).unwrap();
 
       if (res?.id) {
         dispatch(setCurrentChatId(res.id));

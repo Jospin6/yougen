@@ -5,7 +5,7 @@ import VideoCard from "./videoCard";
 
 
 const TrendingVideos = () => {
-  const {videos, loading, countryCode, categoryId } = useSelector(trendingVideos) 
+  const {videos, loading } = useSelector(trendingVideos) 
   
   if (loading) {
     return <div>Chargement en cours...</div>;

@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     ArrowUpIcon,
     FileText,
     Type,
     AlignLeft,
-    Tags
+    Tags,
+    Copy,
+    CopyCheck
 } from "lucide-react";
 import rehypeHighlight from "rehype-highlight";
 import { AnimatePresence, motion } from "framer-motion"
@@ -50,6 +52,14 @@ export default function ChatSection({ chatId }: { chatId: string }) {
     const messageEndRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLDivElement>(null)
     const inputMessage = useSelector(selectInputMessage)
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = (text: string) => {
+        navigator.clipboard.writeText(text).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000); // Réinitialisation après 2s
+        });
+    };
 
     const scrollToBottom = () => {
         messageEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -135,6 +145,18 @@ export default function ChatSection({ chatId }: { chatId: string }) {
                                             >
                                                 {message.content}
                                             </ReactMarkdown>
+                                            <button
+                                                onClick={() => handleCopy(message.content)}
+                                                className=" p-1 mt-2 text-gray-400 hover:text-white transition"
+                                            >
+                                                {copied ?
+                                                    (
+                                                        <CopyCheck size={18} />
+                                                    ) :
+                                                    (
+                                                        <Copy size={18} />
+                                                    )}
+                                            </button>
                                         </div>
                                     ) : (
                                         <p className="text-sm">{message.content}</p>

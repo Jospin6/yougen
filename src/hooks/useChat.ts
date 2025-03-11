@@ -5,6 +5,7 @@ import { setCurrentChatId, postChat, postMessage, updateLastMessage, addMessage,
 import { AppDispatch, RootState } from "@/features/store";
 import { readStreamableValue } from "ai/rsc";
 import { Message } from "@/helpers/types"
+import { useCurrentUser } from "./useCurrentUser";
 
 export const useChat = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -12,12 +13,13 @@ export const useChat = () => {
     const currentChatId = useSelector((state: RootState) => state.chat.currentChatId);
     const [input, setInput] = useState("");
     const [hasStartedChat, setHasStartedChat] = useState(false);
+    const user = useCurrentUser()
 
     const handleSend = async () => {
         if (!input.trim()) return;
 
         if (!currentChatId) {
-            dispatch(postChat({ userId: "6a0292f2-00b2-4730-b7bf-e280b0fe590a" }))
+            dispatch(postChat({ userId: user?.id! }))
                 .then((res) => {
                     if (res.meta.requestStatus === 'fulfilled') {
                         dispatch(setCurrentChatId(res.payload.id));

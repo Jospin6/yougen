@@ -17,7 +17,6 @@ export const NavBar = () => {
     const chats = useSelector(selectChats)
     const [searchTerm, setSearchTerm] = useState("");
     const user = useCurrentUser()
-    console.log("the user",user)
 
     const filteredChats = chats.filter(chat =>
         chat.messages?.some(message =>
@@ -27,7 +26,7 @@ export const NavBar = () => {
     );
 
     useEffect(() => {
-        dispatch(fetchUserChat("6a0292f2-00b2-4730-b7bf-e280b0fe590a"))
+        dispatch(fetchUserChat(user?.id!))
     }, [dispatch])
     return <>
         <div className="pb-4 border-b border-gray-600 pt-3">

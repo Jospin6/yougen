@@ -30,13 +30,12 @@ export default function Login() {
 
     try {
       const response = await dispatch(postLogin(data)).unwrap();
-      if (!response) {
-        throw new Error("Échec de l'inscription");
-      }
-      redirect("/");
+      console.log(response)
+      
     } catch (error) {
       console.error("Erreur de connexion :", error);
     }
+    redirect("/");
   };
 
   return (
