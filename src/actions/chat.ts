@@ -27,8 +27,6 @@ export const chat = async (history: Message[]) => {
         stream.done();
     })();
 
-    console.log(stream.value)
-
     return {
         messages: history,
         newMessage: stream.value,

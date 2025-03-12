@@ -8,7 +8,8 @@ import {
     AlignLeft,
     Tags,
     Copy,
-    CopyCheck
+    CopyCheck,
+    RefreshCcw
 } from "lucide-react";
 import rehypeHighlight from "rehype-highlight";
 import { AnimatePresence, motion } from "framer-motion"
@@ -57,7 +58,7 @@ export default function ChatSection({ chatId }: { chatId: string }) {
     const handleCopy = (text: string) => {
         navigator.clipboard.writeText(text).then(() => {
             setCopied(true);
-            setTimeout(() => setCopied(false), 2000); // Réinitialisation après 2s
+            setTimeout(() => setCopied(false), 3000);
         });
     };
 
@@ -145,18 +146,23 @@ export default function ChatSection({ chatId }: { chatId: string }) {
                                             >
                                                 {message.content}
                                             </ReactMarkdown>
-                                            <button
-                                                onClick={() => handleCopy(message.content)}
-                                                className=" p-1 mt-2 text-gray-400 hover:text-white transition"
-                                            >
-                                                {copied ?
-                                                    (
-                                                        <CopyCheck size={18} />
-                                                    ) :
-                                                    (
-                                                        <Copy size={18} />
-                                                    )}
-                                            </button>
+                                            <div className="flex items-center mt-2 text-gray-400">
+                                                <button
+                                                    onClick={() => handleCopy(message.content)}
+                                                    className=" p-1 hover:text-white transition mr-2"
+                                                >
+                                                    {copied ?
+                                                        (
+                                                            <CopyCheck size={18} />
+                                                        ) :
+                                                        (
+                                                            <Copy size={18} />
+                                                        )}
+                                                </button>
+                                                <button className="hover:text-white transition p-1">
+                                                <RefreshCcw size={18} />
+                                                </button>
+                                            </div>
                                         </div>
                                     ) : (
                                         <p className="text-sm">{message.content}</p>
