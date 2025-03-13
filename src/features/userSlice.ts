@@ -6,33 +6,33 @@ import { RootState } from "./store";
 export const fetchcurrentUser = createAsyncThunk(
     "user/currentUser",
     async (_, { rejectWithValue }) => {
-      try {
-        const response = await axios.get("/api/me", { withCredentials: true });
-        return response.data;
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-            return rejectWithValue(error.response?.data || "Erreur inconnue");
+        try {
+            const response = await axios.get("/api/me", { withCredentials: true });
+            return response.data;
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                return rejectWithValue(error.response?.data || "Erreur inconnue");
+            }
+            return rejectWithValue("Erreur inconnue");
         }
-        return rejectWithValue("Erreur inconnue");
-      }
     }
-  );
+);
 
 export const postUser = createAsyncThunk(
     "user/register",
     async (data: User, { rejectWithValue }) => {
         try {
-            const response = await axios.post("/api/registration", 
+            const response = await axios.post("/api/registration",
                 {
                     name: data.name,
                     email: data.email,
-                    password: data.password,    
+                    password: data.password,
                 }
                 , {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
 
             return response.data;
         } catch (error: any) {
@@ -42,18 +42,18 @@ export const postUser = createAsyncThunk(
     }
 );
 
-export const postLogin = createAsyncThunk("user/postLogin", async ({email, password}: {email: string, password: string}, { rejectWithValue }) => {
+export const postLogin = createAsyncThunk("user/postLogin", async ({ email, password }: { email: string, password: string }, { rejectWithValue }) => {
     try {
-        const response = await axios.post("/api/login", 
+        const response = await axios.post("/api/login",
             {
                 email: email,
-                password: password,    
+                password: password,
             }
             , {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
         return response.data;
     } catch (error: any) {
@@ -65,7 +65,7 @@ export const postLogin = createAsyncThunk("user/postLogin", async ({email, passw
 interface initialStateProps {
     loading: boolean,
     currentUser: User | null,
-    error: string 
+    error: string
 }
 
 const initialState: initialStateProps = {
