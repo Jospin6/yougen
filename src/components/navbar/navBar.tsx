@@ -48,7 +48,6 @@ export const NavBar = () => {
             {
                 chats.map((chat, index) => {
                     const userMessage = chat.messages?.find((message) => message.sender === "user");
-                    console.log("user scripts",userMessage)
                     return (
                         <Link href={`/y/${chat.id}`} key={index}>
                             <SideItem
