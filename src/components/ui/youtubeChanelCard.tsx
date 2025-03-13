@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-import { FaUserPlus, FaEye, FaVideo, FaCalendar } from "react-icons/fa";
 import { getvideoIdeas } from "@/features/youtube/trendingSlice"
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/features/store";
@@ -23,17 +21,16 @@ interface YoutubeChannelProps {
 }
 
 const YoutubeChannelCard: React.FC<{ channel: YoutubeChannelProps }> = ({ channel }) => {
-    const [showFullDescription, setShowFullDescription] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
     const { loading, videoIdeas } = useSelector((state: RootState) => state.trending)
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("fr-FR", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        });
-    };
+    // const formatDate = (dateString: string) => {
+    //     return new Date(dateString).toLocaleDateString("fr-FR", {
+    //         year: "numeric",
+    //         month: "long",
+    //         day: "numeric",
+    //     });
+    // };
 
     const handleGetVideoIdeas = (description: string) => dispatch(getvideoIdeas(description))
 
@@ -99,22 +96,22 @@ const YoutubeChannelCard: React.FC<{ channel: YoutubeChannelProps }> = ({ channe
                     S'abonner
                 </a>
             </div> */}
-            <div className="text-gray-50 mt-4 grid grid-cols-4 gap-2">
-                <div className="col-span-2">
+            <div className="text-gray-50 mt-4">
+                <div className="">
                     <div className="w-full h-10 px-3 border border-slate-800 flex justify-between items-center">
-                        <div>Generate trends video ideas</div>
-                        <ArrowBigDown size={25} onClick={() => handleGetVideoIdeas(channel.snippet.description)} scale={2}/>
+                        <div>Get trends video ideas</div>
+                        <ArrowBigDown size={25} onClick={() => handleGetVideoIdeas(channel.snippet.description)} scale={2} />
                     </div>
-                    {/* <button >get Ideas</button> */}
+
                     {loading ? (
                         <div>Loading...</div>
                     ) : (
                         videoIdeas != null && (
                             <div className="h-[350px] overflow-y-auto">
                                 {videoIdeas.map((vd, i) => <div key={i} className="border border-slate-800 mt-2">
-                                    <p className="border-b py-1text-md px-2 text-gray-200 border-slate-800"> {vd.title} </p>
+                                    <p className="border-b py-1 text-md px-2 text-gray-200 border-slate-800"> {vd.title} </p>
                                     <p className="px-2 text-[14px] text-gray-400"> {vd.description} </p>
-                                    <button className="text-blue-500 hover:underline text-[12px] flex m-2"><span className="mr-2">Generate a script</span> <ExternalLinkIcon size={15}/> </button>
+                                    <button className="text-blue-500 hover:underline text-[12px] flex m-2"><span className="mr-2">Generate a script</span> <ExternalLinkIcon size={15} /> </button>
                                 </div>)}
                             </div>
                         )
@@ -122,7 +119,6 @@ const YoutubeChannelCard: React.FC<{ channel: YoutubeChannelProps }> = ({ channe
 
                     }
                 </div>
-                <div className="col-span-2"></div>
             </div>
         </div>
     );
