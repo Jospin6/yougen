@@ -30,6 +30,8 @@ model User {
   Chat         Chat[]
   accounts     Account[]
   sessions      Session[]
+
+  Channel Channel[]
 }
 
 model Account {
@@ -40,6 +42,13 @@ model Account {
   providerAccountId String
   access_token      String?
   user              User    @relation(fields: [userId], references: [id])
+}
+
+model Channel {
+  id        String    @id @default(uuid())
+  channelId   String
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Session {

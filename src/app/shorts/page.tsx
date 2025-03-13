@@ -13,7 +13,6 @@ import { SetStateAction, useState } from "react";
 export default function ShortsGenerator() {
     const [videoUrl, setVideoUrl] = useState("");
     const [uploadedVideo, setUploadedVideo] = useState<File | null>(null);
-    const [mode, setMode] = useState("auto");
     const [isProcessing, setIsProcessing] = useState(false);
     const [shorts, setShorts] = useState<string[]>([]);
     const [isOpen, setIsOpen] = useState<boolean>(false)

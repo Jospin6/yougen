@@ -30,15 +30,15 @@ export default function RegisterForm() {
 
   const onSubmit = async (data: User) => {
     setError("");
+
     try {
-          const response = await dispatch(postUser(data)).unwrap();
-          if (!response) {
-            throw new Error("Échec de l'inscription");
-          }
-          redirect("/");
-        } catch (error) {
-          console.error("Une erreur est survenue :", error);
-        }
+      const response = await dispatch(postUser(data)).unwrap();
+      console.log(response)
+
+    } catch (error) {
+      console.error("Erreur de connexion :", error);
+    }
+    redirect("/");
   };
 
   return (

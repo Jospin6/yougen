@@ -4,6 +4,7 @@ import chatReducer from "./chatSlice"
 import trendingReducer from "./youtube/trendingSlice"
 import countryReducer from "./youtube/countrySlice"
 import userReducer from "./userSlice"
+import yInfoReducer from "./youtube/yInfoSlice"
 import { persistStore, persistReducer } from "redux-persist"
 import storage from "redux-persist/lib/storage"
 
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
     chat: chatReducer,
     trending: trendingReducer,
     countries: countryReducer,
+    channel: yInfoReducer,
 });
 
 // Création du reducer persistant

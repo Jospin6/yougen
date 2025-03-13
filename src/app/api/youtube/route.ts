@@ -1,29 +1,16 @@
-// import { NextApiRequest, NextApiResponse } from "next";
-// import { getServerSession } from "next-auth/next";
-// import { authOptions } from "../auth/[...nextauth]/route";
+import { NextResponse, NextRequest } from "next/server";
+import prisma from "../../../../prisma/prisma";
 
-// export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-//   const session = await getServerSession(req, res, authOptions);
+export async function POST(req: NextRequest) {
+    const { channelId, userId } = await req.json();
 
-//   if (!session || !session.accessToken) {
-//     return res.status(401).json({ error: "Unauthorized" });
-//   }
-
-//   try {
-//     const response = await fetch(
-//       "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&mine=true",
-//       {
-//         headers: {
-//           Authorization: `Bearer ${session.accessToken}`,
-//         },
-//       }
-//     );
-
-//     if (!response.ok) throw new Error("Failed to fetch YouTube data");
-
-//     const data = await response.json();
-//     return res.status(200).json(data);
-//   } catch (error) {
-//     return res.status(500).json({ error: (error as Error).message });
-//   }
-// }
+    try {
+        const youtube = await prisma.channel.create({
+            data: { channelId, userId },
+        });
+        return NextResponse.json(youtube, { status: 201 });
+    } catch (error) {
+        console.error('Error creating youtube:', error);
+        return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    }
+}
