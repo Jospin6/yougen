@@ -18,18 +18,22 @@ export default function Stats() {
     const user = useCurrentUser()
     const userId = useMemo(() => user?.id, [user]);
     const channelId = useMemo(() => channel?.channelId, [channel]);
-    console.log(youtubeData)
+    console.log("y data: ",youtubeData)
+    console.log("channel id: ",channelId)
 
     useEffect(() => {
         if (userId) {
             dispatch(fetchChannelInfos(userId));
         }
+    }, [userId, dispatch]);
+
+    useEffect(() => {
         if (channelId) {
             dispatch(fetchYoutubeChannelInfos(channelId));
         }
-    }, [userId, channelId, dispatch]);
+    }, [channelId, dispatch])
 
-    return <div className="h-screen">
+    return <div className="h-screen overflow-y-auto">
         <TopNavbar />
         {channel === null ? (
             <div className="flex flex-col justify-center items-center h-[70vh]">
@@ -41,7 +45,7 @@ export default function Stats() {
             </div>
         ) : (
             <div className="text-white">
-                {youtubeData && <YoutubeChannelCard channel={youtubeData[0]}/>}
+                {youtubeData != null && <YoutubeChannelCard channel={youtubeData[0]}/>}
             </div>
         )}
 

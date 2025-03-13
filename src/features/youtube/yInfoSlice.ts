@@ -11,13 +11,13 @@ interface dataProps {
 interface initialState {
     loading: boolean
     channel: dataProps | null
-    youtubeData: any[],
+    youtubeData: any[] | null,
     error: string
 }
 
 const initialState: initialState = {
     loading: false,
-    youtubeData: [],
+    youtubeData: null,
     channel: null,
     error: ""
 }
@@ -44,13 +44,13 @@ export const postChannelId = createAsyncThunk("channel/postChannelId", async (da
 })
 
 const API_KEY = process.env.YOUTUBE_API_KEY;
-console.log("api key", API_KEY)
 const myId = "UCIdmNmW1ZfPLdndZY5p4B6g"
 
 export const fetchYoutubeChannelInfos = createAsyncThunk("channel/fetchYoutubeChannelInfos",
     async (channelId: string) => {
         const url = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=AIzaSyA75RiVKOZ-vCc772e8ZHDVQR5wMSrYMjc`;
         const response = await axios.get(url)
+        console.log("fuckin data: ",response.data.items)
         return response.data.items;
     })
 

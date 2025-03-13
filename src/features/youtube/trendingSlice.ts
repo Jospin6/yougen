@@ -23,10 +23,16 @@ interface VideoCategory {
     };
   }
 
+interface videoIdea {
+    title: string;
+    description: string
+}
+
 interface initialStateProps {
     loading: boolean;
     videos: Video[] | null;
     videoCategories: VideoCategory[]
+    videoIdeas: videoIdea[] | null,
     categoryId: string,
     countryCode: string;
     error: string
@@ -35,6 +41,7 @@ interface initialStateProps {
 const initialState: initialStateProps = {
     loading: false,
     videos: [],
+    videoIdeas: null,
     videoCategories: [],
     countryCode: "US",
     categoryId: "1",
@@ -84,6 +91,22 @@ export const getVideoCategories = createAsyncThunk("trending/getVideoCategories"
     }
 })
 
+export const getvideoIdeas = createAsyncThunk(
+    "trending/getvideoIdeas",
+    async (description: string, { rejectWithValue }) => {
+      try {
+        const response = await axios.get(`/api/video-ideas?description=${description}`);
+
+        console.log(response.data);
+  
+        return response.data;
+      } catch (error: any) {
+        console.error("Error fetching video ideas:", error.message);
+        return rejectWithValue(error.response?.data || "An error occurred");
+      }
+    }
+  );
+
 const trendingSlice = createSlice({
     name: "trending",
     initialState,
@@ -110,6 +133,18 @@ const trendingSlice = createSlice({
 
         builder.addCase(getVideoCategories.fulfilled, (state, action: PayloadAction<any>) => {
             state.videoCategories = action.payload
+        })
+
+        builder.addCase(getvideoIdeas.pending, state => {
+            state.loading = true
+        })
+        .addCase(getvideoIdeas.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false
+            state.videoIdeas = action.payload
+        })
+        .addCase(getvideoIdeas.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload as string
         })
     }
 })
