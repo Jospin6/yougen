@@ -55,6 +55,8 @@ export default function ChatSection({ chatId }: { chatId: string }) {
     const inputMessage = useSelector(selectInputMessage)
     const [copied, setCopied] = useState(false);
 
+    console.log(curentChatId)
+
     const handleCopy = (text: string) => {
         navigator.clipboard.writeText(text).then(() => {
             setCopied(true);

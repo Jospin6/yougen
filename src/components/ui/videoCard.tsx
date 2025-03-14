@@ -28,14 +28,14 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
 
     const handleGenerateScript = async (videoTitle: string) => {
         const prompt = `Generate a similar script for this topic: ${videoTitle}`
-    
+
         try {
             const res = await dispatch(postChat({ userId: user?.id! })).unwrap();
-    
+
             if (res?.id) {
                 dispatch(setCurrentChatId(res.id));
                 dispatch(setInputMessage(prompt));
-                setTimeout(() => { 
+                setTimeout(() => {
                     router.push(`/y/${res.id}`);
                 }, 200)
             }
@@ -45,11 +45,26 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
     };
 
     return (
-        <div className=" shadow-lg m-2 p-2 h-[200px] border-b border-gray-600 flex overflow-hidden">
-            <div className="w-[80%] relative">
-                <p className="text-sm text-gray-100 my-2">{video.snippet.channelTitle}</p>
-                <h3 className="text-2xl font-semibold text-gray-50">{video.snippet.title}</h3>
-                <div className="flex justify-start absolute left-0 w-full items-center bottom-1">
+        <div className="rounded-t-xl col-span-2 shadow-md shadow-black m-2 h-auto bg-slate-800">
+            <div className="w-[100%] rounded-t-xl h-[250px]">
+                <a
+                    href={`https://www.youtube.com/watch?v=${video.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className=""
+                >
+                    <img
+                        src={video.snippet.thumbnails.medium.url}
+                        alt={video.snippet.title}
+                        className="w-[100%] rounded-t-xl h-[250px] object-cover"
+                    />
+                </a>
+
+            </div>
+            <div className="p-2">
+                <h3 className="text-md font-semibold text-gray-50">{video.snippet.title}</h3>
+                <p className="text-[12px] text-gray-400 my-2">{video.snippet.channelTitle}</p>
+                <div className="flex justify-start w-full items-center bottom-1">
                     <a
                         href={`https://www.youtube.com/watch?v=${video.id}`}
                         target="_blank"
@@ -62,21 +77,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
                 </div>
 
             </div>
-            <div className="w-[20%] relative">
-                <a
-                    href={`https://www.youtube.com/watch?v=${video.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="absolute right-2 bottom-2"
-                >
-                    <img
-                        src={video.snippet.thumbnails.medium.url}
-                        alt={video.snippet.title}
-                        className="w-[100px] h-[100px] object-cover"
-                    />
-                </a>
 
-            </div>
         </div>
     );
 };

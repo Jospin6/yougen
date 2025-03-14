@@ -14,14 +14,17 @@ interface Video {
             };
         };
     };
+    contentDetails?: {
+        duration: string; // La durée dans le format ISO 8601, par exemple "PT1M30S"
+    };
 }
 
 interface VideoCategory {
     id: string;
     snippet: {
-      title: string;
+        title: string;
     };
-  }
+}
 
 interface videoIdea {
     title: string;
@@ -48,8 +51,8 @@ const initialState: initialStateProps = {
     error: ""
 }
 
-export const fetchTrendsVideos = createAsyncThunk("trending/fetchTrendsVideos", async ({countryCode, categoryId}:{countryCode: string, categoryId: string}) => {
-    if (countryCode === "CG" ) {
+export const fetchTrendsVideos = createAsyncThunk("trending/fetchTrendsVideos", async ({ countryCode, categoryId }: { countryCode: string, categoryId: string }) => {
+    if (countryCode === "CG") {
         countryCode = "CD"
     }
     try {
@@ -60,7 +63,7 @@ export const fetchTrendsVideos = createAsyncThunk("trending/fetchTrendsVideos", 
                     part: "snippet,statistics",
                     chart: "mostPopular",
                     regionCode: countryCode,
-                    maxResults: 10,
+                    maxResults: 40,
                     videoCategoryId: categoryId,
                     key: "AIzaSyA75RiVKOZ-vCc772e8ZHDVQR5wMSrYMjc",
                 },
@@ -73,7 +76,7 @@ export const fetchTrendsVideos = createAsyncThunk("trending/fetchTrendsVideos", 
 })
 
 export const getVideoCategories = createAsyncThunk("trending/getVideoCategories", async (countryCode: string) => {
-    if (countryCode === "CG" ) {
+    if (countryCode === "CG") {
         countryCode = "CD"
     }
     try {
@@ -94,18 +97,18 @@ export const getVideoCategories = createAsyncThunk("trending/getVideoCategories"
 export const getvideoIdeas = createAsyncThunk(
     "trending/getvideoIdeas",
     async (description: string, { rejectWithValue }) => {
-      try {
-        const response = await axios.get(`/api/video-ideas?description=${description}`);
+        try {
+            const response = await axios.get(`/api/video-ideas?description=${description}`);
 
-        console.log(response.data);
-  
-        return response.data;
-      } catch (error: any) {
-        console.error("Error fetching video ideas:", error.message);
-        return rejectWithValue(error.response?.data || "An error occurred");
-      }
+            console.log(response.data);
+
+            return response.data;
+        } catch (error: any) {
+            console.error("Error fetching video ideas:", error.message);
+            return rejectWithValue(error.response?.data || "An error occurred");
+        }
     }
-  );
+);
 
 const trendingSlice = createSlice({
     name: "trending",
@@ -122,14 +125,14 @@ const trendingSlice = createSlice({
         builder.addCase(fetchTrendsVideos.pending, state => {
             state.loading = true
         })
-        .addCase(fetchTrendsVideos.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.videos = action.payload
-        })
-        .addCase(fetchTrendsVideos.rejected, state => {
-            state.loading = false
-            state.error = "An error occured please try again"
-        })
+            .addCase(fetchTrendsVideos.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+                state.videos = action.payload
+            })
+            .addCase(fetchTrendsVideos.rejected, state => {
+                state.loading = false
+                state.error = "An error occured please try again"
+            })
 
         builder.addCase(getVideoCategories.fulfilled, (state, action: PayloadAction<any>) => {
             state.videoCategories = action.payload
@@ -138,18 +141,18 @@ const trendingSlice = createSlice({
         builder.addCase(getvideoIdeas.pending, state => {
             state.loading = true
         })
-        .addCase(getvideoIdeas.fulfilled, (state, action: PayloadAction<any>) => {
-            state.loading = false
-            state.videoIdeas = action.payload
-        })
-        .addCase(getvideoIdeas.rejected, (state, action) => {
-            state.loading = false
-            state.error = action.payload as string
-        })
+            .addCase(getvideoIdeas.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false
+                state.videoIdeas = action.payload
+            })
+            .addCase(getvideoIdeas.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload as string
+            })
     }
 })
 
 export const trendingVideos = (state: RootState) => state.trending;
 
-export const {setCountryCode, setVideoCategoriesId} = trendingSlice.actions
+export const { setCountryCode, setVideoCategoriesId } = trendingSlice.actions
 export default trendingSlice.reducer
