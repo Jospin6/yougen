@@ -96,11 +96,9 @@ export const getVideoCategories = createAsyncThunk("trending/getVideoCategories"
 
 export const getvideoIdeas = createAsyncThunk(
     "trending/getvideoIdeas",
-    async (description: string, { rejectWithValue }) => {
+    async (channelId: string, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`/api/video-ideas?description=${description}`);
-
-            console.log(response.data);
+            const response = await axios.get(`/api/video-ideas?channelId=${channelId}`);
 
             return response.data;
         } catch (error: any) {

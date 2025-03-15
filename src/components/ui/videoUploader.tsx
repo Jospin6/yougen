@@ -4,20 +4,23 @@ import { useState } from "react";
 import axios from "axios";
 // import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 export const VideoUploader = () => {
   const [title, setTitle] = useState("");
   const [video, setVideo] = useState<File | null>(null);
   const [shorts, setShorts] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const user = useCurrentUser()
 
   const handleUpload = async () => {
-    if (!video) return;
+    if (!video || user === null) return;
     setLoading(true);
 
     const formData = new FormData();
     formData.append("video", video);
     formData.append("title", title);
+    formData.append("userId", user.id!);
 
     try {
       const { data } = await axios.post("/api/upload-video", formData);

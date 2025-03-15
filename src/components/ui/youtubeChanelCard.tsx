@@ -22,10 +22,10 @@ interface YoutubeChannelProps {
     };
 }
 
-const YoutubeChannelCard: React.FC<{ channel: YoutubeChannelProps, collabs: any[] }> = ({ channel, collabs }) => {
+const YoutubeChannelCard: React.FC<{ channel: YoutubeChannelProps, collabs: any[], channelId: string }> = ({ channel, collabs, channelId }) => {
     const dispatch = useDispatch<AppDispatch>();
     const { loading, videoIdeas } = useSelector((state: RootState) => state.trending)
-    const handleGetVideoIdeas = (description: string) => dispatch(getvideoIdeas(description))
+    const handleGetVideoIdeas = (channelId: string) => dispatch(getvideoIdeas(channelId))
 
     return (
         <div className="px-4 h-auto">
@@ -43,56 +43,10 @@ const YoutubeChannelCard: React.FC<{ channel: YoutubeChannelProps, collabs: any[
                 <p className="text-sm text-gray-500">@{channel.snippet.customUrl.replace("@", "")}</p>
             </div>
 
-            {/* Contenu principal */}
-            {/* <div className="text-center p-6 mt-10">
-
-                <p className="mt-3 text-gray-700 text-sm">
-                    {showFullDescription
-                        ? channel.snippet.description
-                        : `${channel.snippet.description.slice(0, 120)}... `}
-                    {!showFullDescription && (
-                        <button
-                            onClick={() => setShowFullDescription(true)}
-                            className="text-blue-500 hover:underline"
-                        >
-                            Lire plus
-                        </button>
-                    )}
-                </p>
-
-                <div className="flex justify-around mt-4 text-gray-600">
-                    <div className="flex items-center gap-1">
-                        <FaUserPlus className="text-lg text-yellow-500" />
-                        <span>{parseInt(channel.statistics.subscriberCount).toLocaleString()} abonnés</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                        <FaEye className="text-lg text-green-500" />
-                        <span>{parseInt(channel.statistics.viewCount).toLocaleString()} vues</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                        <FaVideo className="text-lg text-red-500" />
-                        <span>{channel.statistics.videoCount} vidéos</span>
-                    </div>
-                </div>
-
-                <div className="flex items-center justify-center text-gray-500 mt-3">
-                    <FaCalendar className="text-lg mr-1" />
-                    <span>Créée le {formatDate(channel.snippet.publishedAt)}</span>
-                </div>
-
-                <a
-                    href={`https://www.youtube.com/${channel.snippet.customUrl}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-5 inline-block bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full shadow-md transition duration-300"
-                >
-                    S'abonner
-                </a>
-            </div> */}
             <div className="text-gray-50 mt-4">
                 <div className="w-full h-10 px-3 border border-slate-800 flex justify-between items-center">
                     <div>Get trends video ideas</div>
-                    <ArrowBigDown size={25} onClick={() => handleGetVideoIdeas(channel.snippet.description)} scale={2} />
+                    <ArrowBigDown size={25} onClick={() => handleGetVideoIdeas(channelId)} scale={2} />
                 </div>
 
                 {loading ? (

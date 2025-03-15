@@ -4,20 +4,23 @@ import { useState } from "react";
 // import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 export const ThumbnailGenerator = () => {
     const [title, setTitle] = useState("");
     const [image, setImage] = useState<File | null>(null);
     const [generatedThumbnail, setGeneratedThumbnail] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const user = useCurrentUser()
 
     const handleGenerate = async () => {
-        if (!image || !title) return;
+        if (!image || !title || user === null) return;
         setLoading(true);
 
         const formData = new FormData();
         formData.append("image", image);
         formData.append("title", title);
+        formData.append("userId", user.id!);
 
         try {
             const { data } = await axios.post("/api/generate-thumbnail", formData);

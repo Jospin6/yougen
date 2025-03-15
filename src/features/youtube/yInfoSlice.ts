@@ -65,7 +65,6 @@ export const fetchChannelInfos = createAsyncThunk("channel/fetchChannelInfos", a
 export const fetchCollabSuggestions = createAsyncThunk("channel/fetchCollabSuggestions", async (channelId: string) => {
     const response = await axios.get(`/api/collab-suggestion?channelId=${channelId}`)
     const categories = response.data
-    console.log("categs: ", categories)
     return await findSimilarChannels(categories)
 })
 

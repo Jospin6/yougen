@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
         const formData = await req.formData();
         const file = formData.get("video") as File;
         const title = formData.get("title") as string;
+        const userId = formData.get("userId") as string;
 
         if (!file) return NextResponse.json({ error: "Aucune vidéo reçue" }, { status: 400 });
 
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
             data: {
                 title,
                 originalUrl: `/uploads/${file.name}`,
-                userId: "test-user", // À remplacer avec l'ID utilisateur réel
+                userId: userId,
             },
         });
 

@@ -48,7 +48,7 @@ export default function Stats() {
             </div>
         ) : (
             <div className="text-white">
-                {youtubeData != null && <YoutubeChannelCard channel={youtubeData[0]} collabs={collabs}/>}
+                {youtubeData != null && <YoutubeChannelCard channel={youtubeData[0]} collabs={collabs} channelId={channelId!} />}
             </div>
         )}
 
