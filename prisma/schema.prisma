@@ -32,6 +32,10 @@ model User {
   sessions      Session[]
 
   Channel Channel[]
+
+  Thumbnail Thumbnail[]
+
+  Video Video[]
 }
 
 model Account {
@@ -42,6 +46,25 @@ model Account {
   providerAccountId String
   access_token      String?
   user              User    @relation(fields: [userId], references: [id])
+}
+
+model Thumbnail {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  url       String
+  createdAt DateTime @default(now())
+  user      User    @relation(fields: [userId], references: [id])
+}
+
+model Video {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  originalUrl String
+  processed  Boolean @default(false)
+  createdAt DateTime @default(now())
+  user      User    @relation(fields: [userId], references: [id])
 }
 
 model Channel {
