@@ -6,6 +6,7 @@ import countryReducer from "./youtube/countrySlice"
 import userReducer from "./userSlice"
 import yInfoReducer from "./youtube/yInfoSlice"
 import { persistStore, persistReducer } from "redux-persist"
+import puppeteerReducer from "./puppeteerSlice"
 import storage from "redux-persist/lib/storage"
 
 
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
     trending: trendingReducer,
     countries: countryReducer,
     channel: yInfoReducer,
+    puppeteer: puppeteerReducer,
 });
 
 // Création du reducer persistant
