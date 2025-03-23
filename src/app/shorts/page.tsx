@@ -76,8 +76,8 @@ export default function ShortsGenerator() {
         </div>
 
         {isOpen && (
-            <Popup isOpen={isOpen} onClose={handleSearchPopup} comp={<span className="text-2xl pl-2">Shorts Generator</span>} >
-                <div className="p-3">
+            <Popup isOpen={isOpen} onClose={handleSearchPopup} comp={<span className="text-2xl pl-2 text-black">Shorts Generator</span>} >
+                <div className="p-3 text-black">
                     {/* Input URL YouTube */}
                     <label className="mb-2">YouTube URL</label>
                     <input

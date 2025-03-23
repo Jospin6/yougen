@@ -66,8 +66,8 @@ export default function Thumbnail() {
 
 
       {isOpen && (
-        <Popup isOpen={isOpen} onClose={handleSearchPopup} comp={<span className="text-2xl pl-2">Generate miniatures</span>} >
-          <div className="p-3">
+        <Popup isOpen={isOpen} onClose={handleSearchPopup} comp={<span className="text-2xl pl-2 text-black">Generate miniatures</span>} >
+          <div className="p-3 text-black">
             {/* Options */}
             <div className="">
               <label className="mb-2 block">Text on the image</label>
@@ -81,7 +81,7 @@ export default function Thumbnail() {
             </div>
             <div>
 
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-4 gap-2 text-black">
                 <div className="mt-4 col-span-2">
                   <label className="mb-2 block">Miniature style</label>
                   <select
